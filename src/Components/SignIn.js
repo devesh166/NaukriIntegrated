@@ -78,35 +78,60 @@ class SignIn extends Component {
         });
     }
 
-    componentDidMount() {
-        axios.get('http://localhost:5001/users')
-            .then((res) => {
+//     componentDidMount() {
+//         axios.get('http://localhost:5001/users')
+//             .then((res) => {
 
-                this.setState({ userData: res.data }, () => {
-                    console.log(res.data)
-                });
+//                 this.setState({ userData: res.data }, () => {
+//                     console.log(res.data)
+//                 });
 
-            })
-    }
+//             })
+//     }
     onClickSignIn = (e) => {
         e.preventDefault();
-        this.state.userData.map((ele, ind) => {
-            if (ele.email == this.state.login_email) {
-                if (ele.user_id == this.state.login_password) {
-                    localStorage.setItem("currentUser",JSON.stringify(ele))
-                    if(ele.role==1){
+//         this.state.userData.map((ele, ind) => {
+//             if (ele.email == this.state.login_email) {
+//                 if (ele.user_id == this.state.login_password) {
+//                     localStorage.setItem("currentUser",JSON.stringify(ele))
+//                     if(ele.role==1){
+//                         return this.props.history.push('/company')
+//                     }else{
+//                         return this.props.history.push('/')
+//                     }
+                    
+//                 } else {
+
+//                     return console.log("incorrect password")
+//                 }
+
+//             }
+//         })
+        
+        
+        axios.post('http://localhost:5001/user/readone', {
+                email: this.state.login_email,
+                password: this.state.login_password
+            })
+            .then((res) => {
+            if(res.data===''){
+                alert('Login fail')
+            }
+            else{
+                alert('Login Success');
+                localStorage.setItem('currentuser', JSON.stringify(res.data));
+                 if(res.data.role==1){
                         return this.props.history.push('/company')
                     }else{
                         return this.props.history.push('/')
                     }
-                    
-                } else {
-
-                    return console.log("incorrect password")
-                }
-
+                }});
+               
             }
-        })
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
     render() {
         return (
